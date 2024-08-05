@@ -1,0 +1,1273 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="shopee聊天工具, shopee 聊聊, shopee 聊聊客服, shopee聊聊工具, lazada聊聊功能, lazada聊天集成软件, lazada聊天管理, shopee客服聊天助手软件, shopee客服聊天助手, 虾皮客服聊天助手下载, 虾皮 聊聊">
+    <meta name="description" content="多客是专注于跨境电商场景下客服系统，支持 Lazada、Shopee 和 TikTok 平台客服集中回复；系统收发稳定，200 个店铺不卡顿。并支持自动回复、快捷回复、一键翻译、子账号权限分配等诸多功能">
+    <meta property="og:image" content="https://cdn.duoke.com/www/images/favicon.ico">
+    <link rel="shortcut icon" href="https://cdn.duoke.com/www/images/favicon.ico">
+    <title>多客 | 跨境电商客服消息聚合平台</title>
+    <link rel="stylesheet" href="https://cdn.duoke.com/www/iconfont/iconfont_v8.css">
+    <script src="https://cdn.duoke.com/www/iconfont/iconfont_v8.js"></script>
+    <link rel="stylesheet" href="https://cdn.duoke.com/www/files/swiper/swiper-bundle_v1.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&display=swap">
+    <base href="/">
+    <style>
+        body {
+            position: relative;
+            min-width: 1350px;
+            margin: 0;
+            font-family: roboto, Arial, Helvetica, Noto Sans SC, Microsoft YaHei, sans-serif;
+            font-family: Noto Sans SC, Microsoft YaHei, sans-serif;
+            color: #333;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .event-banner {
+            width: 100%;
+            height: 60px;
+            background-color: #005fee;
+            background-image: url('https://cdn.duoke.com/www/images/dkImg/top_banner_v1.png');
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .event-banner + header {
+            top: 60px;
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+
+        header.hidden-header {
+            display: none;
+        }
+
+        header.fix-header {
+            background-color: #fff;
+            border-bottom-color: #f0f0f0;
+        }
+
+        @supports (position: sticky) {
+            header.fix-header {
+                position: sticky;
+                top: 0 !important;
+                transition: top 0.5s ease;
+            }
+
+            header.hidden-header {
+                display: block;
+                top: -66px !important;
+            }
+
+            header.fix-header + .banner_wrap {
+                margin-top: -66px;
+            }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 calc(50% - 600px);
+            height: 65px;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo-wrap .logo {
+            display: inline-block;
+            flex-shrink: 0;
+            width: 88px;
+            height: 36px;
+            background-image: url('https://cdn.duoke.com/www/images/nav_logo_1.png');
+            background-size: 88px 36px;
+        }
+
+        header.fix-header .logo-wrap .logo,
+        header.whatsapp-header .logo-wrap .logo {
+            background-image: url('https://cdn.duoke.com/www/images/nav_logo_2.png');
+        }
+
+        .logo-wrap .brand {
+            line-height: 18px;
+            margin-left: 20px;
+            padding: 3px 17px;
+            font-size: 16px;
+            color: #fff;
+            border-left: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        header.fix-header .logo-wrap .brand,
+        header.whatsapp-header .logo-wrap .brand {
+            color: #333;
+            border-left-color: #b5b5b5;
+        }
+
+        .header-content nav {
+            flex-shrink: 0;
+        }
+
+        .header-content nav > ul {
+            display: inline-block;
+            line-height: 64px;
+            margin: 0;
+            list-style: none;
+        }
+
+        .header-content nav > ul > li {
+            display: inline-block;
+            padding: 0 3px;
+        }
+
+        .header-content nav > ul > li + li {
+            margin-left: 32px;
+        }
+
+        .header-content nav > ul > li.active {
+            border-bottom: 2px solid #fff;
+        }
+
+        header.fix-header .header-content nav > ul > li.active,
+        header.whatsapp-header .header-content nav > ul > li.active {
+            border-bottom-color: #0564f5;
+        }
+
+        .header-content nav > ul > li > a {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s ease;
+        }
+
+        header.fix-header .header-content nav > ul > li > a,
+        header.whatsapp-header .header-content nav > ul > li > a {
+            color: #333;
+        }
+
+        .header-content nav > ul > li.active > a,
+        .header-content nav > ul > li > a:hover {
+            color: #fff;
+        }
+
+        header.fix-header .header-content nav > ul > li.active > a,
+        header.fix-header .header-content nav > ul > li > a:hover,
+        header.whatsapp-header .header-content nav > ul > li.active > a,
+        header.whatsapp-header .header-content nav > ul > li > a:hover {
+            color: #0564f5;
+        }
+
+        .header-content nav > ul > li > .consult-dropdown,
+        .header-content nav > ul > li > .lang-dropdown {
+            position: relative;
+        }
+
+        .header-content nav > ul > li > .consult-dropdown ul,
+        .header-content nav > ul > li > .lang-dropdown ul {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            padding: 0;
+            min-width: 120px;
+            background-color: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 2px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            list-style: none;
+        }
+
+        .header-content nav > ul > li > .consult-dropdown:hover ul,
+        .header-content nav > ul > li > .lang-dropdown:hover ul {
+            display: block;
+        }
+
+        .header-content nav > ul > li > .consult-dropdown ul > li,
+        .header-content nav > ul > li > .lang-dropdown ul > li {
+            display: flex;
+            align-items: center;
+            padding: 0 10px 0 32px;
+            line-height: 30px;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .header-content nav > ul > li > .consult-dropdown ul > li {
+            padding-left: 16px;
+        }
+
+        .header-content nav > ul > li > .consult-dropdown ul > li:hover,
+        .header-content nav > ul > li > .lang-dropdown ul > li:hover {
+            color: #0564F5;
+            background-color: #e5effe;
+        }
+
+        .header-content nav > ul > li > .consult-dropdown ul > li .consult-icon {
+            display: inline-block;
+            margin-right: 7px;
+            font-size: 18px;
+        }
+
+        .header-content nav .register-btn {
+            display: inline-block;
+            line-height: 36px;
+            margin-left: 30px;
+            padding: 0 16px;
+            text-align: center;
+            color: #0564f5;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+
+        header.fix-header .header-content nav .register-btn,
+        header.whatsapp-header .header-content nav .register-btn {
+            color: #fff;
+            background-color: #0564f5;
+        }
+
+        .swiper-container {
+            --swiper-navigation-color: rgba(245, 245, 245, 0.4);
+            --swiper-navigation-size: 40px;
+        }
+
+        .swiper-pagination {
+            bottom: 18px !important;
+            font-size: 0;
+        }
+
+        .swiper-pagination-bullet {
+            margin: 0 6px !important;
+            padding: 14px 0;
+            width: 46px;
+            height: 4px;
+            background-color: #fff;
+            background-clip: content-box;
+            opacity: 0.4;
+            border-radius: unset;
+        }
+
+        .swiper-pagination-bullet-active {
+            background-color: #fff;
+            opacity: 1;
+        }
+
+        .swiper-button-prev {
+            left: 32px;
+        }
+
+        .swiper-button-next {
+            right: 32px;
+        }
+
+        .banner_wrap {
+            position: relative;
+            width: 100%;
+            height: 560px;
+            overflow: hidden;
+        }
+
+        .banner {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            height: 560px;
+            padding-top: 160px;
+            padding-bottom: 94px;
+            padding-left: calc(50% - 600px);
+            box-sizing: border-box;
+            color: #fff;
+            background-color: #005ff0;
+            background-image: url('https://cdn.duoke.com/www/images/dkImg/banner_bg1_v1.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .banner.financing {
+            justify-content: space-between;
+            padding-top: 129px;
+            background-color: #040891;
+            background-image: url('https://cdn.duoke.com/www/images/dkImg/banner_bg2_v3.png');
+        }
+
+        .banner.discount-event {
+            background-color: transparent;
+            background-image: url('https://cdn.duoke.com/www/images/dkImg/discount_event_banner_zh_v2.png');
+        }
+
+        .banner.whatsapp {
+            background-color: transparent;
+            background-image: url('https://cdn.duoke.com/www/images/dkImg/banner_whatsapp_bg_v1.png');
+        }
+
+        .banner.whatsapp .banner-title {
+            min-height: auto;
+            color: #16233d;
+        }
+
+        .banner.whatsapp .banner-list {
+            margin-top: 19px;
+            margin-bottom: 0;
+            padding-left: 0;
+            font-size: 18px;
+            line-height: 36px;
+            color: #414d65;
+            list-style: none;
+        }
+
+        .banner.whatsapp .banner-list li::marker {
+            font-size: 12px;
+        }
+
+        .banner.whatsapp .banner-btn {
+            margin-top: 48px;
+            color: #fff;
+            background-color: #0564f5;
+        }
+        .banner.ai-customer-service {
+            background-color: transparent;
+            background-image: url('https://cdn.duoke.com/www/images/dkImg/ai_bg_v1.png');
+        }
+
+        .financing-title {
+            font-size: 44px;
+        }
+
+        .financing-content {
+            font-size: 78px;
+        }
+
+        .financing-amount {
+            margin: 0 16px;
+            font-weight: bold;
+            background-image: linear-gradient(#fff, #f6e49d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .financing-total {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 0 24px;
+            line-height: 36px;
+            font-size: 20px;
+            border-radius: 18px;
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+        .financing-total-amount {
+            margin: 0 4px;
+            color: #fff993;
+            font-weight: bold;
+        }
+
+        .financing-investor {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .financing-investor + .financing-investor {
+            margin-top: 16px;
+        }
+
+        .financing-investor .divider {
+            display: inline-block;
+            width: 1px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.4);
+            margin: 0 12px;
+        }
+
+        .icon_logo_softbank {
+            font-size: 20px;
+        }
+
+        .icon_logo_sequoia {
+            font-size: 24px;
+        }
+
+        .icon_logo_tiger {
+            font-size: 10px;
+        }
+
+        .icon_logo_ggv {
+            font-size: 10px;
+        }
+
+        .icon_logo_renaissance {
+            font-size: 20px;
+        }
+
+        .banner-title {
+            max-width: 630px;
+            min-height: 47px;
+            margin: 0;
+            font-size: 34px;
+            font-weight: 500;
+        }
+
+        .banner-desc {
+            max-width: 560px;
+            min-height: 19px;
+            margin-top: 19px;
+            font-size: 18px;
+        }
+
+        .banner-btn {
+            display: inline-block;
+            width: 210px;
+            line-height: 52px;
+            margin-top: 80px;
+            font-size: 22px;
+            text-align: center;
+            color: #0078eb;
+            background-color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .platform-wrap {
+            display: flex;
+            align-items: center;
+            margin-top: 32px;
+            font-size: 14px;
+        }
+
+        .platform-wrap a {
+            position: relative;
+        }
+
+        .platform-wrap a .iconfont {
+            margin-right: 4px;
+            font-size: 20px;
+        }
+
+        .platform-wrap a .hot {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            width: 34px;
+            height: 20px;
+            margin-right: 0;
+            font-size: 16px;
+            color: #ff530f;
+        }
+
+        .platform-wrap a .qrcode-wrap {
+            display: none;
+            position: absolute;
+            top: 35px;
+            right: 50%;
+            transform: translateX(50%);
+            padding: 8px;
+            width: 126px;
+            height: 126px;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+            cursor: default;
+        }
+
+        .platform-wrap a .qrcode-wrap:after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 0;
+            height: 0;
+            border-width: 6px;
+            border-top-width: 0;
+            border-style: solid;
+            border-color: transparent;
+            border-bottom-color: #fff;
+        }
+
+        .platform-wrap a .qrcode-wrap img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .platform-wrap a:focus .qrcode-wrap {
+            display: block;
+        }
+
+        .platform-wrap .divider {
+            width: 1px;
+            height: 14px;
+            background-color: rgba(255, 255, 255, 0.4);
+            margin: 0 16px;
+        }
+
+        .intro-wrap {
+            position: absolute;
+            margin-left: 586px;
+            width: 614px;
+            height: 357px;
+        }
+
+        .intro-wrap img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .intro-wrap video {
+            display: none;
+            width: calc(100% - 10px);
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .feature-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 40px;
+            width: 100%;
+            height: auto;
+            min-height: 738px;
+        }
+
+        .feature-title {
+            margin: 66px 0 0 0;
+            font-size: 32px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            width: 1200px;
+            margin: 54px 0 0 0;
+            padding: 0;
+            font-size: 0;
+            list-style: none;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 373px;
+            height: auto;
+            min-height: 228px;
+            background-color: #fff;
+            box-shadow: 0 15px 30px 0 rgba(208, 224, 246, 0.3), 0 -15px 25px 0 rgba(208, 224, 246, 0.2);
+            border-radius: 8px;
+        }
+
+        .feature-item:not(:nth-of-type(3n + 1)) {
+            margin-left: 40px;
+        }
+
+        .feature-item:nth-of-type(n + 4) {
+            margin-top: 40px;
+        }
+
+        .feature-item img {
+            width: 60px;
+            height: 60px;
+            margin-top: 27px;
+        }
+
+        .feature-item h3 {
+            margin: 21px 10px 0;
+            width: calc(100% - 20px);
+            font-size: 18px;
+            font-weight: 400;
+            color: #333;
+            text-align: center;
+        }
+
+        .feature-item h3 span {
+            position: relative;
+        }
+
+        .feature-item p {
+            display: inline-block;
+            width: calc(100% - 40px);
+            width: calc(100% - 120px);
+            line-height: 24px;
+            margin: 11px 20px 0;
+            padding-bottom: 10px;
+            font-size: 14px;
+            text-align: center;
+            text-align: center;
+            color: #666;
+        }
+
+        .feature-item .developing-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 0 5px;
+            width: auto;
+            min-width: 42px;
+            line-height: 18px;
+            font-size: 12px;
+            text-align: center;
+            color: #c6c6c6;
+            border: 1px solid #e2e2e2;
+            border-radius: 1px;
+        }
+
+        .feature-item .icon_hot2 {
+            position: absolute;
+            top: -14px;
+            right: -22px;
+            font-size: 16px;
+            color: #ff530f;
+        }
+
+        .voc-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 569px;
+            background-color: #edf2f9;
+        }
+
+        .voc-box + .why-dk-box {
+            background-color: #fff;
+        }
+
+        .voc-box + .why-dk-box .why-dk-item {
+            box-shadow: 0 15px 30px 0 rgba(208, 224, 246, 0.3), 0 -15px 25px 0 rgba(208, 224, 246, 0.2);
+        }
+
+        .voc-title {
+            margin: 66px 0 0 0;
+            font-size: 32px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .voc-sub-title {
+            margin: 8px 0 0 0;
+            font-size: 18px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .voc-list-wrap {
+            position: relative;
+            margin: 56px 0 0 0;
+            width: 1200px;
+            height: 314px;
+        }
+
+        .voc-list-wrap .icon_left_arrow {
+            position: absolute;
+            top: 0;
+            left: -74px;
+            bottom: 0;
+            margin: auto 0;
+            width: 42px;
+            height: 42px;
+            font-size: 42px;
+            color: #91969d;
+            cursor: pointer;
+        }
+
+        .voc-list-wrap .icon_right_arrow {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: -74px;
+            margin: auto 0;
+            width: 42px;
+            height: 42px;
+            font-size: 42px;
+            color: #91969d;
+            cursor: pointer;
+        }
+
+        .voc-list {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            font-size: 0;
+            list-style: none;
+            overflow: hidden;
+        }
+
+        .voc-item {
+            position: absolute;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 32px;
+            width: 290px;
+            height: 202px;
+            background-color: #fff;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 -4.5px 0 -0.5px #0564f5;
+            transition: all 0.8s;
+        }
+
+        .voc-item .icon_quote {
+            font-size: 20px;
+            color: #d5e3f8;
+        }
+
+        .voc-item .content {
+            flex: 1;
+            margin-top: 22px;
+            color: #666;
+        }
+
+        .voc-item .user {
+            display: flex;
+            align-items: center;
+        }
+
+        .voc-item .user .avatar {
+            margin-right: 13px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        .voc-item .user .score {
+            display: flex;
+            color: #fec723;
+        }
+
+        .why-dk-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 455px;
+            background-color: #edf2f9;
+        }
+
+        .why-dk-title {
+            margin: 66px 0 0 0;
+            font-size: 32px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .why-dk-list {
+            display: flex;
+            flex-wrap: wrap;
+            width: 1200px;
+            margin: 56px 0 0 0;
+            padding: 0;
+            font-size: 0;
+            list-style: none;
+        }
+
+        .why-dk-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 380px;
+            height: auto;
+            min-height: 200px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        .why-dk-item:nth-of-type(n + 2) {
+            margin-left: 30px;
+        }
+
+        .why-dk-item img {
+            width: 60px;
+            height: 60px;
+            margin-top: 32px;
+        }
+
+        .why-dk-item h3 {
+            margin: 14px 10px 0;
+            width: calc(100% - 20px);
+            font-size: 20px;
+            font-weight: 400;
+            color: #333;
+            text-align: center;
+        }
+
+        .why-dk-item p {
+            line-height: 24px;
+            margin: 4px 10px 0;
+            padding-bottom: 10px;
+            font-size: 14px;
+            text-align: center;
+            color: #666;
+        }
+
+        .download-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 210px;
+            background-image: url('https://cdn.duoke.com/www/images/bottom_bg.png');
+        }
+
+        .download-title {
+            margin: 49px 0 0 0;
+            font-size: 30px;
+            font-weight: 400;
+            text-align: center;
+            color: #fff;
+        }
+
+        .download-btn {
+            display: inline-block;
+            width: 200px;
+            line-height: 46px;
+            margin-top: 30px;
+            font-size: 20px;
+            text-align: center;
+            color: #fff;
+            background-color: #0564f5;
+            border-radius: 4px;
+        }
+
+        .download-desc {
+            margin-top: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .dialog-wrap {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 2;
+        }
+
+        .dialog {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 800px;
+            height: 463px;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+
+        .dialog_qrcode {
+            margin-top: 67px;
+            padding: 15px;
+            border: 4px solid #2977EB;
+            border-radius: 8px;
+        }
+
+        .dialog_qrcode img {
+            width: 220px;
+            height: 220px;
+        }
+
+        .dialog_title {
+            margin-top: 18px;
+            font-size: 24px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .dialog_desc {
+            margin-top: 6px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .dialog-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 15px;
+            height: 16px;
+            fill: #666;
+            cursor: pointer;
+        }
+
+        footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 60px;
+            background-color: #242425;
+        }
+
+        footer p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        footer p a {
+            display: inline;
+        }
+
+        .icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+        .logo-new {
+            width: 25px;
+            height:13px;
+            border-radius: 2px;
+            background: #ff4d4f;
+            font-weight: 400;
+            font-size: 9px;
+            text-align: center;
+            color: #fff;
+            padding: 0 2px;
+            margin-right: 4px;
+            position: relative;
+            top: -2px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <span class="logo-wrap">
+                <span class="logo"></span>
+                <span class="brand">全球电商智能客服系统</span>
+            </span>
+            <nav></nav>
+        </div>
+    </header>
+    <section class="banner_wrap">
+        <div class="banner">
+            <h1 class="banner-title">Shopee、Lazada、TikTok 客服管理系统</h1>
+            <div class="banner-desc">一人同时管理 200 个店铺的客服利器</div>
+            <a class="banner-btn" href="https://www.duoke.com/download.html">免费下载</a>
+            <div class="platform-wrap">
+                <a target="_blank" href="https://app.duoke.com/dl/win32/latest">
+                    <i class="iconfont icon_win1"></i>
+                    <span>Windows</span>
+                </a>
+                <span class="divider"></span>
+                <a href="https://www.duoke.com/download.html">
+                    <i class="iconfont icon_android1"></i>
+                    <span>Android</span>
+                </a>
+                <span class="divider"></span>
+                <a href="https://www.duoke.com/download.html">
+                    <i class="iconfont icon_mac1"></i>
+                    <span>iOS</span>
+                    <img class="hot" src="https://cdn.duoke.com/www/images/dkImg/hot_v1.png">
+                </a>
+                <span class="divider"></span>
+                <a target="_blank" href="https://app.duoke.com/dl/mac/latest">
+                    <i class="iconfont icon_mac1"></i>
+                    <span>Mac</span>
+                </a>
+            </div>
+            <div class="intro-wrap">
+                <img src="https://cdn.duoke.com/www/images/dkImg/intro_cover_v3.png">
+                <video src="https://cdn.duoke.com/www/files/dkVideo/intro_video_v1.mp4" muted autoplay controls></video>
+            </div>
+        </div>
+    </section>
+    <section class="feature-box">
+        <h2 class="feature-title">九项特色功能</h2>
+        <ul class="feature-list">
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_2.png">
+                <h3>安全可靠防关联</h3>
+                <p>平台官方 API 授权对接，无密码泄露、店铺关联风险</p>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_6.png">
+                <h3>
+                    <span>
+                        移动回复更便捷
+                        <i class="iconfont icon_hot2"></i>
+                    </span>
+                </h3>
+                <p>支持 iOS 和安卓手机版，随时随地回复客户信息</p>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_5.png">
+                <h3>自动回复更及时</h3>
+                <p>24 小时自动回复，无需电脑在线挂机，保证店铺回复率</p>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_4.png">
+                <h3>集中回复更高效</h3>
+                <p>集中处理 Shopee、Lazada 等多平台、多店铺客户消息</p>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_1.png">
+                <h3>消息收发无遗漏</h3>
+                <p>API 接口直接获取数据，确保信息推送及时不丢失</p>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_3.png">
+                <h3>操作顺滑无卡顿</h3>
+                <p>全球主流技术方案，200 店铺同时在线无卡顿</p>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_9.png">
+                <h3>绩效统计可视化</h3>
+                <p>客服绩效数据多维度可视化展示， 客服表现更清晰</p>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_7.png">
+                <h3>客服分配更灵活</h3>
+                <p>可按售前、售后、语种、 员工能力等多种机制分配对接客服</p>
+                <span class="developing-tag">开发中</span>
+            </li>
+            <li class="feature-item">
+                <img src="https://cdn.duoke.com/www/images/feature_icon_8.png">
+                <h3>AI 回复省人工</h3>
+                <p>7x24 小时在线服务，智能协助人工解决客户问题</p>
+            </li>
+        </ul>
+    </section>
+    <section class="voc-box">
+        <h2 class="voc-title">客户之声</h2>
+        <h3 class="voc-sub-title">选择与信赖——让客户服务变得更简单</h3>
+        <div class="voc-list-wrap">
+            <ul class="voc-list">
+                <li class="voc-item" style="transform: translateX(-423px);">
+                    <i class="iconfont icon_quote"></i>
+                    <div class="content">
+                        多客是一款非常好的产品，界面设计简洁流畅，使用起来方便快捷，带来了极大的惊喜感。
+                    </div>
+                    <div class="user">
+                        <img class="avatar" src="https://cdn.duoke.com/www/images/dkImg/avatar_1_v1.jpg">
+                        <div>
+                            <div class="score">
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                            </div>
+                            <div class="name">ก้อย Lazada 泰国本土卖家</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="voc-item" style="transform: translateX(0);">
+                    <i class="iconfont icon_quote"></i>
+                    <div class="content">
+                        多客帮助我解决了店铺回复率的问题，自动回复可以设置关键词回复，设置好之后不用在线就可以回复，非常方便，使用多客后，店铺回复率终于达到了 95% 以上。
+                    </div>
+                    <div class="user">
+                        <img class="avatar" src="https://cdn.duoke.com/www/images/dkImg/avatar_2_v1.jpg">
+                        <div>
+                            <div class="score">
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                            </div>
+                            <div class="name">李伟林 广州跨境卖家</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="voc-item" style="transform: translateX(423px) scale(1.14);">
+                    <i class="iconfont icon_quote"></i>
+                    <div class="content">
+                        店铺管理一直是我们的难题，多客可以同时管理 Lazada、Shopee 200 个店铺，让客服的工作效率大幅提升，节省了大量客服成本和管理成本。
+                    </div>
+                    <div class="user">
+                        <img class="avatar" src="https://cdn.duoke.com/www/images/dkImg/avatar_3_v1.jpg">
+                        <div>
+                            <div class="score">
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                            </div>
+                            <div class="name">杜雁婷 江苏*通电子商务有限公司</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="voc-item" style="transform: translateX(846px);">
+                    <i class="iconfont icon_quote"></i>
+                    <div class="content">
+                        多客官方授权，没有 IP 关联封店问题，安全有保障，消息接收又快又稳定，让我们能更及时服务客户，帮助店铺业绩提升，值得推荐。
+                    </div>
+                    <div class="user">
+                        <img class="avatar" src="https://cdn.duoke.com/www/images/dkImg/avatar_4_v1.jpg">
+                        <div>
+                            <div class="score">
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                            </div>
+                            <div class="name">孙长斌 *图电子商务有限公司</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="voc-item" style="transform: translateX(1269px);">
+                    <i class="iconfont icon_quote"></i>
+                    <div class="content">
+                        我们看重多客的专业技术和服务理念，服务态度好，遇到的问题反馈之后都能很快解决，会继续支持。
+                    </div>
+                    <div class="user">
+                        <img class="avatar" src="https://cdn.duoke.com/www/images/dkImg/avatar_5_v1.jpg">
+                        <div>
+                            <div class="score">
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                                <i class="iconfont icon_star_filled"></i>
+                            </div>
+                            <div class="name">魏蕊 深圳市跨境*电子商务有限公司</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <i class="iconfont icon_left_arrow"></i>
+            <i class="iconfont icon_right_arrow"></i>
+        </div>
+    </section>
+    <section class="why-dk-box">
+        <h2 class="why-dk-title">为什么选择多客</h2>
+        <ul class="why-dk-list">
+            <li class="why-dk-item">
+                <img src="https://cdn.duoke.com/www/images/why_dk_icon_1.png">
+                <h3>店小秘旗下产品</h3>
+                <p>一样的初心，一样的服务</p>
+            </li>
+            <li class="why-dk-item">
+                <img src="https://cdn.duoke.com/www/images/why_dk_icon_2.png">
+                <h3>官方 API 对接</h3>
+                <p>安全稳定不漏消息</p>
+            </li>
+            <li class="why-dk-item">
+                <img src="https://cdn.duoke.com/www/images/why_dk_icon_3.png">
+                <h3>多平台集中回复</h3>
+                <p>一个页面处理 200 个店铺不卡顿</p>
+            </li>
+        </ul>
+    </section>
+    <section class="download-box">
+        <h3 class="download-title">一个客服同时管理 200 个店铺的客服利器</h3>
+        <a class="download-btn" href="https://www.duoke.com/download.html">立即下载</a>
+    </section>
+    <footer>
+        <p>深圳乐搏科技有限公司 <a target="_blank" href="https://beian.miit.gov.cn/">粤ICP备2021001014号</a></p>
+    </footer>
+</body>
+<script src="https://cdn.duoke.com/www/files/swiper/swiper-bundle_v1.min.js"></script>
+<script>
+    var header = document.querySelector('header');
+    document.addEventListener('scroll', function () {
+        var scrollTop = document.documentElement.scrollTop;
+        if (scrollTop > 560) {
+            header.classList.remove('hidden-header');
+            header.classList.add('fix-header');
+            header.style.top = scrollTop + 'px';
+        } else if (scrollTop > 64) {
+            header.classList.remove('fix-header');
+            header.classList.add('hidden-header');
+        } else {
+            header.classList.remove('fix-header', 'hidden-header');
+            header.style.top = '';
+        }
+    });
+
+    var vocItemsConfig = [
+            {
+                transform: 'translateX(-423px)',
+                opacity: 0
+            },
+            {
+                transform: 'translateX(0)',
+                opacity: 1
+            },
+            {
+                transform: 'translateX(423px) scale(1.14)',
+                opacity: 1
+            },
+            {
+                transform: 'translateX(846px)',
+                opacity: 1
+            },
+            {
+                transform: 'translateX(1269px)',
+                opacity: 0
+            }
+        ],
+        changeVocItemsStyleFlag = true;
+
+    function changeVocItemsStyle(direction) {
+        direction = direction || 'right';
+        if (changeVocItemsStyleFlag) {
+            if (direction === 'right') {
+                vocItemsConfig.unshift(vocItemsConfig.pop());
+            } else {
+                vocItemsConfig.push(vocItemsConfig.shift());
+            }
+            [].forEach.call(document.querySelectorAll('.voc-item'), function(item, index) {
+                item.style.transform = vocItemsConfig[index].transform;
+                item.style.opacity = vocItemsConfig[index].opacity;
+            });
+            changeVocItemsStyleFlag = false;
+            setTimeout(function () {
+                changeVocItemsStyleFlag = true;
+            }, 800);
+        }
+    }
+
+    changeVocItemsStyle('right');
+
+    setInterval(function () {
+        changeVocItemsStyle('right');
+    }, 5000);
+
+
+    document.querySelector('.voc-list-wrap .icon_left_arrow').addEventListener('click', function () {
+        changeVocItemsStyle('left');
+    });
+
+    document.querySelector('.voc-list-wrap .icon_right_arrow').addEventListener('click', function () {
+        changeVocItemsStyle('right');
+    });
+</script>
+</html>
